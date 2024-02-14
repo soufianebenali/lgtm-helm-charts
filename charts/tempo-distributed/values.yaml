@@ -141,9 +141,14 @@ ingester:
   # -- Annotations for ingester pods
   podAnnotations: {}
   # -- Additional CLI args for the ingester
-  extraArgs: []
+  extraArgs:
+    - -config.expand-env=true
   # -- Environment variables to add to the ingester pods
-  extraEnv: []
+  extraEnv:
+  - name: MY_POD_IP
+    valueFrom:
+      fieldRef:
+        fieldPath: status.podIP
   # -- Environment variables from secrets or configmaps to add to the ingester pods
   extraEnvFrom: []
   # -- Resource requests and limits for the ingester
@@ -987,7 +992,8 @@ memberlist:
   rejoin_interval: "0s"
   left_ingesters_timeout: "5m"
   leave_timeout: "5s"
-  bind_addr: []
+  bind_addr:
+    - ${MY_POD_IP}
   bind_port: 7946
   packet_dial_timeout: "5s"
   packet_write_timeout: "5s"

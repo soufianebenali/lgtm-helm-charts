@@ -19,7 +19,7 @@ Umbrella chart for a distributed Loki, Grafana, Tempo and Mimir stack
 * <https://github.com/grafana/loki>
 * <https://github.com/grafana/mimir>
 * <https://github.com/grafana/tempo>
-
+ÓÉ
 ## Requirements
 
 | Repository | Name | Version |

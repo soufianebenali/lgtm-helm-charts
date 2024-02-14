@@ -252,7 +252,9 @@ loki:
 #   boltdb: {}
 
   # -- Structured loki configuration, takes precedence over `loki.config`, `loki.schemaConfig`, `loki.storageConfig`
-  structuredConfig: {}
+  structuredConfig:
+      memberlist:
+        bind_addr: []
 
 # -- Provides a reloadable runtime configuration file for some specific configuration
 runtimeConfig: {}
@@ -436,9 +438,15 @@ ingester:
   # -- Labels for ingestor service
   serviceLabels: {}
   # -- Additional CLI args for the ingester
-  extraArgs: []
+  extraArgs: 
+    - -config.expand-env=true
+    - -memberlist.bind-addr=$(MY_POD_IP_LOKI)
   # -- Environment variables to add to the ingester pods
-  extraEnv: []
+  extraEnv:
+  - name: MY_POD_IP_LOKI
+    valueFrom:
+      fieldRef:
+        fieldPath: status.podIP
   # -- Environment variables from secrets or configmaps to add to the ingester pods
   extraEnvFrom: []
   # -- Volume mounts to add to the ingester pods
@@ -574,10 +582,15 @@ distributor:
   podAnnotations: {}
   # -- Labels for distributor service
   serviceLabels: {}
-  # -- Additional CLI args for the distributor
-  extraArgs: []
-  # -- Environment variables to add to the distributor pods
-  extraEnv: []
+  # -- Additional CLI args for the ingester
+  extraArgs: 
+  - -memberlist.bind-addr=$(MY_POD_IP_LOKI)
+  # -- Environment variables to add to the ingester pods
+  extraEnv:
+  - name: MY_POD_IP_LOKI
+    valueFrom:
+      fieldRef:
+        fieldPath: status.podIP
   # -- Environment variables from secrets or configmaps to add to the distributor pods
   extraEnvFrom: []
   # -- Volume mounts to add to the distributor pods
@@ -672,10 +685,15 @@ querier:
   podAnnotations: {}
   # -- Labels for querier service
   serviceLabels: {}
-  # -- Additional CLI args for the querier
-  extraArgs: []
-  # -- Environment variables to add to the querier pods
-  extraEnv: []
+  # -- Additional CLI args for the ingester
+  extraArgs: 
+  - -memberlist.bind-addr=$(MY_POD_IP_LOKI)
+  # -- Environment variables to add to the ingester pods
+  extraEnv:
+  - name: MY_POD_IP_LOKI
+    valueFrom:
+      fieldRef:
+        fieldPath: status.podIP
   # -- Environment variables from secrets or configmaps to add to the querier pods
   extraEnvFrom: []
   # -- Volume mounts to add to the querier pods
